@@ -26,7 +26,7 @@ public class PlanetServiceTest {
   //  @Autowired
     @InjectMocks
     private PlanetService planetService;
-j
+
    // @MockitoBean
    @Mock
     private PlanetRepository planetRepository;
@@ -55,6 +55,7 @@ j
 
     @Test
     public void getPlanet_ByExistingId_ReturnsPlanet() {
+           // AAA => ARANGE  => ACT => ASSERT
         when(planetRepository.findById(1L)).thenReturn(Optional.of(PLANET));
 
         Optional<Planet> sut = planetService.get(1L);
@@ -72,6 +73,30 @@ j
         Optional<Planet> sut = planetService.get(1L);
 
         assertThat(sut).isEmpty();
-
     }
+
+
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet() {
+        when(planetRepository.findByName(PLANET.getName())).thenReturn(Optional.of(PLANET));
+
+        Optional<Planet> sut = planetService.getByName(PLANET.getName());
+
+        assertThat(sut).isNotEmpty();
+        assertThat(sut.get()).isEqualTo(PLANET);
+    }
+
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsEmpty() {
+        final String name =  "Unexiting name";
+        when(planetRepository.findByName(name)).thenReturn(Optional.empty());
+
+        Optional<Planet> sut = planetService.getByName(name);
+
+        assertThat(sut).isEmpty();
+    }
+
+
+
 }
