@@ -1,5 +1,14 @@
 package com.example.sw_planet_api.web;
 
+import com.example.sw_planet_api.domain.PlanetService;
+
+import static com.example.sw_planet_api.common.PlanetConstants.PLANET;
+
+import java.nio.file.OpenOption;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -7,14 +16,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-
 
 @ControllerAdvice
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private final PlanetService planetService;
+
+
+    GeneralExceptionHandler(PlanetService planetService) {
+        this.planetService = planetService;
+    }
 
     @Override
     @Nullable
@@ -23,4 +37,12 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         // TODO Auto-generated method stub
         return super.handleMethodArgumentNotValid(ex, headers, HttpStatus.UNPROCESSABLE_ENTITY, request);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    private ResponseEntity<Object> handleCOnflict(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+
 }
