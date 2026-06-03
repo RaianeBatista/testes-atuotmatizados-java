@@ -29,16 +29,18 @@ public class Planet {
     @Column(nullable = false)
     private String terrain;
 
+    
+
+    public Planet() {
+    }
+
     public Planet(String name, String climate, String terrain) {
         this.name = name;
         this.climate = climate;
         this.terrain = terrain;
     }
 
-    // JPA requires a no-arg constructor with at least protected visibility
-    public Planet() {
-    }
-
+   
     public Long getId() {
         return id;
     }
